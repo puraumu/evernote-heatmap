@@ -5,3 +5,5 @@ public/css/bootstrap/responsive.css
 public/js/script.js
 public/static/evernote.csv
 public/static/evernote.json
+public/js/reload.js
+
