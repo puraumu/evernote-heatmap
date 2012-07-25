@@ -2,9 +2,9 @@
 # This will only work if you run this application from the ruby/sample/client
 # directory of the Evernote API SDK.
 dir = File.expand_path(File.dirname(__FILE__))
-$LOAD_PATH.push("#{dir}/lib")
-$LOAD_PATH.push("#{dir}/lib/thrift")
-$LOAD_PATH.push("#{dir}/lib/Evernote/EDAM")
+$LOAD_PATH.push("#{dir}/evernote-sdk-ruby/lib")
+$LOAD_PATH.push("#{dir}/evernote-sdk-ruby/lib/thrift")
+$LOAD_PATH.push("#{dir}/evernote-sdk-ruby/lib/Evernote/EDAM")
 
 require "thrift/types"
 require "thrift/struct"
@@ -86,28 +86,22 @@ class ENClient
 
   def all_notes
     out = []
-    notebooks = self.noteStore.listNotebooks(self.token)
-    notebooks.each do |notebook|
-      offset = 0
-      pageSize = 100
-
-      filter = Evernote::EDAM::NoteStore::NoteFilter.new
-      filter.notebookGuid = notebook.guid
-
-      spec = Evernote::EDAM::NoteStore::NotesMetadataResultSpec.new
-      spec.includeNotebookGuid = true
-      spec.includeTitle = true
-      spec.includeCreated = true
-      spec.includeTagGuids = true
-
-      noteList = self.noteStore.findNotesMetadata(self.token, filter, offset, pageSize, spec)
-      while 0 <= (noteList.totalNotes - (noteList.startIndex + noteList.notes.length))
-        noteList.notes.each do |meta|
-          out.push meta
-        end
-        offset = offset + pageSize
-        noteList = self.noteStore.findNotesMetadata(self.token, filter, offset, pageSize, spec)
+    offset = 0
+    pageSize = 100
+    filter = Evernote::EDAM::NoteStore::NoteFilter.new
+    filter.words = "-created:#{Time.now.strftime("%Y%m%d")}"
+    spec = Evernote::EDAM::NoteStore::NotesMetadataResultSpec.new
+    spec.includeNotebookGuid = true
+    spec.includeTitle = true
+    spec.includeCreated = true
+    spec.includeTagGuids = true
+    noteList = self.noteStore.findNotesMetadata(self.token, filter, offset, pageSize, spec)
+    while 0 <= (noteList.totalNotes - (noteList.startIndex + noteList.notes.length))
+      noteList.notes.each do |meta|
+        out.push meta
       end
+      offset = offset + pageSize
+      noteList = self.noteStore.findNotesMetadata(self.token, filter, offset, pageSize, spec)
     end
     out
   end
@@ -130,6 +124,15 @@ class ENClient
     end
     out
   end
+
+  def all_notes_number
+    filter = Evernote::EDAM::NoteStore::NoteFilter.new
+    filter.words = "-created:#{Time.now.strftime("%Y%m%d")}"
+    spec = Evernote::EDAM::NoteStore::NotesMetadataResultSpec.new
+    noteList = self.noteStore.findNotesMetadata(self.token, filter, 0, 10, spec)
+    noteList.totalNotes
+  end
+
 
 end # /ENClient
 
