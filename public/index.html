@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>DJI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="http://d3js.org/d3.v2.js"></script>
+    <link type="text/css" rel="stylesheet" href="/css/style.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/colorbrewer.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/calendar.css"/>
+  </head>
+  <body>
+
+    <div class="container">
+
+      <h1>Evernote HeatMap</h1>
+      <div class="btn-group">
+        <select name="view-mode" id="view-mode">
+          <option value="day-mode">Focus Days</option>
+          <option value="week-mode">Focus Weeks</option>
+          <option value="month-mode">Focus Months</option>
+        </select>
+        <select name="yaxis" id="yaxis">
+          <option value="tag">Tag</option>
+          <option value="notebook">Notebook</option>
+        </select>
+      </div>
+
+      <select name="year" id="year">
+      </select>
+      <select name="month" id="month">
+        <option value="0">January</option>
+        <option value="1">February</option>
+        <option value="2">March</option>
+        <option value="3">April</option>
+        <option value="4">May</option>
+        <option value="5">June</option>
+        <option value="6">July</option>
+        <option value="7">August</option>
+        <option value="8">September</option>
+        <option value="9">October</option>
+        <option value="10">November</option>
+        <option value="11">December</option>
+      </select>
+      <button class="btn" id="go">Go</button>
+
+      <span>color: </span><select id="choose-color">
+          <optgroup label="Colors by Cynthia Brewer.">
+            <option value="YlGn">YlGn</option>
+            <option value="YlGnBu">YlGnBu</option>
+            <option value="GnBu">GnBu</option>
+            <option value="BuGn">BuGn</option>
+            <option value="PuBuGn">PuBuGn</option>
+            <option value="PuBu">PuBu</option>
+            <option value="BuPu">BuPu</option>
+            <option value="RdPu">RdPu</option>
+            <option value="PuRd">PuRd</option>
+            <option value="OrRd">OrRd</option>
+            <option value="YlOrRd">YlOrRd</option>
+            <option value="YlOrBr">YlOrBr</option>
+            <option value="Purples">Purples</option>
+            <option value="Blues" selected="">Blues</option>
+            <option value="Greens">Greens</option>
+            <option value="Oranges">Oranges</option>
+            <option value="Reds">Reds</option>
+            <option value="Greys">Greys</option>
+          </optgroup>
+        </select>
+
+      <svg id="sample"></svg>
+
+      <div id="display">
+        <div class="hide" id="pop">
+          <div class="mod">
+            <div class="nav">
+              <div class="up">
+                <span class="disc">Date</span><span class="date"></span>
+              </div>
+              <div class="down">
+                <span class="name"></span><span class="value"></span>
+              </div>
+            </div>
+            <div class="bottom"><div class="tail"></div></div>
+          </div>
+        </div>
+        <div class="unit" id="left"></div>
+        <div class="unit" id="right"></div>
+      </div>
+
+    </div><!-- /.container -->
+
+    <script type="text/javascript" src="/js/script.js"></script>
+    <!-- <script type="text/javascript" src="/js/d3.scales.js"></script> -->
+    <!-- <script type="text/javascript" src="/js/dji.js"></script> -->
+
+  </body>
+</html>

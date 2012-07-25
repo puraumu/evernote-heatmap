@@ -1,0 +1,151 @@
+/* Welcome to Compass.
+ * In this file you should write your main styles. (or centralize your imports)
+ * Import this file using the following HTML or equivalent:
+ * <link href="/css/style.css" rel="stylesheet" type="text/css" /> */
+
+@import "compass/reset";
+@import "compass";
+
+@import "./_base.scss";
+@import "./_partials.scss";
+@import "./bootstrap/_bootstrap.scss";
+@import "./_oocss.scss";
+
+
+/* Codes start here ... */
+
+// Grobal Settings
+
+$CellSize: 18px;
+$Margin: 2px;
+$Tile: $CellSize + $Margin;
+$RowHead: 100px;
+$RowHeadMargin: 7px;
+$GraphWidth: 940px - $RowHead;
+$CellBackColor: #EEE;
+$CellSepColor: #ccd;
+
+body{
+  /* background-color: firebrick; */
+}
+
+#display {
+  position: relative;
+}
+
+#X-disp {
+}
+#Y-disp {
+}
+#Cells {
+}
+
+#pop {
+  position: absolute;
+  /* top: 80px; */
+  /* left: 130px; */
+}
+.mod {
+  border: 1px solid rgba(200, 200, 200, 0.85);
+  border-radius: 3px;
+  background-color: rgba(239, 239, 239, 0.9);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+
+  position: absolute;
+  top: -$Tile * 2 * 1.5;
+  left: -$CellSize / 2;
+  padding: 10px;
+  width: 230px;
+  .nav {
+    .up {}
+    .down {}
+    .date {}
+    .name {}
+    .value {}
+  }
+  .bottom {
+    position: absolute;
+    top: 65px;
+    .tail {
+      border-top-style: none;
+      border: solid 7px transparent;
+      border-top-color: #CCC;
+      height: 0;
+      width: 0; } } }
+
+#left {
+  width: $RowHead; }
+
+#right {
+  overflow: scroll;
+  margin-left: $RowHeadMargin;
+  width: $GraphWidth - $RowHeadMargin; }
+
+.cell {
+  position: relative; }
+
+.wrap {
+  width: 800px;
+  overflow: scroll; }
+
+// thead and tbody
+.cell-name {
+  font: 13px/1em normal;
+  text-align: right;
+}
+
+.red {
+  color: red;}
+
+.day_view {
+  width: $Tile;
+  height: $Tile;
+  .face {
+    width: $CellSize;
+    height: $CellSize;} }
+
+.week_view {
+  width: $Tile;
+  height: $Tile;
+  .face {
+    width: $CellSize;
+    height: $CellSize;} }
+
+.month_view {
+  width: $Tile;
+  height: $Tile;
+  .face {
+    width: $CellSize - 2;
+    height: $CellSize - 2;} }
+
+.face {
+  fill: #A1514F;
+}
+
+#dates-default {
+  @include rotate(-50deg);
+  position: absolute;
+  width: $RowHead;
+  top: 47px;
+  left: -$CellSize; }
+
+.dates-day_view {
+  @extend #dates-default; }
+
+.dates-week_view {
+  @extend #dates-default; }
+
+.dates-month_view {
+  @extend #dates-default;
+  top: 64px;
+  left: (-$Tile) * 2; }
+
+.table-top {
+ @extend .line; }
+
+/* .col-head { */
+  /* height: 90px; } */
+
+.row-head {
+  width: $RowHead;
+  overflow: hidden; }
