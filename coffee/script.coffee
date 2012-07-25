@@ -46,9 +46,10 @@ mouseover = (p) ->
 
   pop.classed('hide', false)
   pop.style('left', "#{x}px").style('top', "#{y}px")
-  pop.select('.date').text("#{date}")
-  pop.select('.name').text("#{name}")
-  pop.select('.value').text("#{p.z}")
+  # pop.select('.date').text("#{date}")
+  # pop.select('.name').text("#{name}")
+  # pop.select('.value').text("#{p.z}")
+  pop.select('.value').text("x: #{p.x}, y: #{p.y}, z: #{p.z}")
 
 mouseout = (p) ->
   pop = d3.select('#pop')
@@ -85,7 +86,7 @@ Cells = Disp
 Conf =
   start: do ->
     latest = new Date().getTime()
-    half = 1 * 30 * 24 * 60 * 60 * 1000 # 30 days * 24h * 60min * 60sec
+    half = 18 * 30 * 24 * 60 * 60 * 1000 # 30 days * 24h * 60min * 60sec
     new Date(latest - half)
   end: new Date()
   color: "YlGn"
@@ -95,9 +96,9 @@ Conf =
   y_names: []
   # yaxis: "notebook"
   yaxis: "tag"
-  viewMode: 'day_view' # day_view => .day_view
+  # viewMode: 'day_view' # day_view => .day_view
   # viewMode: 'week_view' # week_view => .week_view
-  # viewMode: 'month_view' # month_view => .month_view
+  viewMode: 'month_view' # month_view => .month_view
 
 # -- dynamic
 Posi =
@@ -111,6 +112,11 @@ Posi =
   cellMargin: 2
   tile: () ->
     Posi.cellSize + Posi.cellMargin
+  addition30: () ->
+    Math.round(Conf.y_names.length / 30) * Posi.dateMargin
+  domain30: (i) ->
+    n = i + 1
+    Math.floor(n / 30) * Posi.dateMargin
 
 # -- dynamic
 initializeConf = () ->
@@ -145,7 +151,7 @@ initializeConf = () ->
 
   left = Disp.select('#left').append('svg')
     .attr('width', Posi.rowHead)
-    .attr('height', Conf.y_names.length * Posi.tile() + Posi.dateMargin)
+    .attr('height', Conf.y_names.length * Posi.tile() + Posi.dateMargin + Posi.addition30())
   right = Disp.select('#right').append('svg')
     .attr('width', () ->
       width = Conf.x_days.length * Posi.tile() + Posi.tile() * 2
@@ -153,13 +159,13 @@ initializeConf = () ->
         return Posi.displayWidth() - Posi.rowHeadMargin
       else
         return width )
-    .attr('height', Conf.y_names.length * Posi.tile() + Posi.dateMargin)
+    .attr('height', Conf.y_names.length * Posi.tile() + Posi.dateMargin + Posi.addition30())
     .attr('class', "#{Conf.color}")
 
   right.append('rect')
     .attr('x', 0)
     .attr('y', Posi.dateMargin)
-    .attr('height', Conf.y_names.length * Posi.tile())
+    .attr('height', Conf.y_names.length * Posi.tile() + Posi.addition30())
     .attr('width', Conf.x_days.length * Posi.tile())
     .attr('class', "q0-9")
 
@@ -250,7 +256,7 @@ dynamicRenderer = () ->
   row = Cells.selectAll('g')
       .data(matrix)
     .enter().append('g')
-      .attr("transform", (d,i) -> "translate(0, #{i * Posi.tile()})")
+      .attr("transform", (d,i) -> "translate(0, #{i * Posi.tile() + Posi.domain30(i)})")
 
   # X ->
   row.append('line')
@@ -276,7 +282,7 @@ dynamicRenderer = () ->
       .attr('x1', (d) -> d * Posi.tile() - usm_width * 1.5)
       .attr('x2', (d) -> d * Posi.tile() - usm_width * 1.5)
       .attr('y1', 0)
-      .attr('y2', (d) -> Posi.tile() * Conf.y_names.length - 1)
+      .attr('y2', (d) -> Posi.tile() * Conf.y_names.length + Posi.addition30() - 1)
       .attr('stroke', 'deepskyblue')
       .attr('stroke-width', usm_width)
   Cells.selectAll('.back')
@@ -286,7 +292,7 @@ dynamicRenderer = () ->
       .attr('x1', (d) -> (d * Posi.tile() + usm_width) - usm_width * 1.5)
       .attr('x2', (d) -> (d * Posi.tile() + usm_width) - usm_width * 1.5)
       .attr('y1', 0)
-      .attr('y2', (d) -> Posi.tile() * Conf.y_names.length - 1)
+      .attr('y2', (d) -> Posi.tile() * Conf.y_names.length + Posi.addition30() - 1)
       .attr('stroke', 'white')
       .attr('stroke-width', usm_width)
 
@@ -303,7 +309,7 @@ dynamicRenderer = () ->
   Y_disp.selectAll('text')
       .data(name_list)
     .enter().append('text')
-      .attr('y', (d,i) -> Posi.tile() * i)
+      .attr('y', (d,i) -> i * Posi.tile() + Posi.domain30(i))
       .attr('text-anchor', "end")
       .attr('fill', "#333")
       .style('font-size', 13)
@@ -334,6 +340,16 @@ dynamicRenderer = () ->
         .attr('width', Posi.cellSize)
         .attr('x', (d,i) -> Posi.tile() * d.x)
         .attr('y', 0) )
+
+  row.filter((d,i) -> (i + 1) % 30 is 0).selectAll('g')
+      .data(date_list)
+    .enter().append('g')
+      .attr("transform", (d,i) -> "translate(#{Posi.tile() * i + 10}, 0)")
+      .append('text')
+        .attr("transform", "translate(0, 0)rotate(-50)")
+        .attr('fill', "#333")
+        .style('font-size', 13)
+        .text((d) -> d)
 
   ###
   === /Positioning ===
