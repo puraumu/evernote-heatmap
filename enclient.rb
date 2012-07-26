@@ -18,7 +18,7 @@ require "Evernote/EDAM/note_store"
 require "Evernote/EDAM/limits_constants.rb"
 
 class ENClient
-  attr_accessor :token, :noteStore, :tags, :notebooks
+  attr_accessor :token, :noteStore, :tags, :notebooks, :version
   # attr_accessor :token, :evernoteHost, :userStoreUrl,
                 # :userStoreTransport, :userStoreProtocol, :userStore,
                 # :notesStoreTransport, :notesStoreProtocol, :notesStore
@@ -47,6 +47,7 @@ class ENClient
     versionOK = userStore.checkVersion("Evernote EDAMTest (Ruby)",
                                     Evernote::EDAM::UserStore::EDAM_VERSION_MAJOR,
                                     Evernote::EDAM::UserStore::EDAM_VERSION_MINOR)
+    self.version = versionOK
     if (!versionOK)
       puts "Is my Evernote API version up to date?  #{versionOK}"
       exit(1)

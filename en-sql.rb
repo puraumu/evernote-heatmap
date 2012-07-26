@@ -1,6 +1,5 @@
 require 'sqlite3'
 require 'csv'
-require '~/scripts/rubylibs/util'
 
 # user settings
 csv_out = './evernote.csv'
@@ -135,4 +134,6 @@ p csv
   # csv_string = csv_string << row.to_csv
 # end
 
-# Util.write_file(csv_out, csv_string)
+f = File.new(csv_out, 'w')
+f.write(csv_string)
+f.close

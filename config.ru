@@ -1,27 +1,38 @@
 require 'sinatra/base'
 require 'json'
 require './enclient'
-require '~/scripts/rubylibs/util'
 
-# The project root directory
-$root = ::File.dirname(__FILE__)
-$token = JSON.parse(Util.read_file("../personal/evernote-heatmap.json"))["authToken"]
+$token = "YOUR-DEVELOPER-TOKEN"
 
 class SinatraStaticServer < Sinatra::Base
 
   get("/estimate") do
     content_type :json
-    client = ENClient.new($token)
-    client.all_notes_number.to_json
-    1400.to_json
+    out = {"state" => "OK", "number" => 0}
+    begin
+      client = ENClient.new($token)
+      out["number"] = client.all_notes_number
+    rescue Evernote::EDAM::Error::EDAMUserException
+      out["state"] = "NG"
+    end
+    out.to_json
   end
 
   get("/do") do
-    # content_type :json
-    client = ENClient.new($token)
+    begin
+      client = ENClient.new($token)
+    rescue Evernote::EDAM::Error::EDAMUserException
+      return "NG"
+    end
+
     oo = client.guid_name
-    Util.write_file('./public/static/evernote.json', oo.to_json)
-    "done"
+    write_file(oo.to_json)
+    "OK"
+  end
+
+  get ("/check") do
+    client = ENClient.new($token)
+    client.version.to_s
   end
 
   get(/.+/) do
@@ -38,6 +49,14 @@ class SinatraStaticServer < Sinatra::Base
     File.exist?(file_path) ? send_file(file_path) : missing_file_block.call
   end
 
+  def write_file(out)
+    f = File.new('./public/static/evernote.json', 'w')
+    f.write(out)
+    f.close
+  end
+
 end
+
+$token = JSON.parse(File.read("../personal/evernote-heatmap.json"))["authToken"] if $token == "YOUR-DEVELOPER-TOKEN"
 
 run SinatraStaticServer
